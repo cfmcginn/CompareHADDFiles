@@ -52,11 +52,40 @@ int compareHADD(const std::string unHaddFileDir, const std::string haddFileDir)
   std::vector<std::string> ttreeNamesUnHadd = returnRootFileContentsList(tempUnHaddFile_p, "TTree");
   std::vector<std::string> ttreeNamesHadd = returnRootFileContentsList(tempHaddFile_p, "TTree");
 
+  pos = 0;
+  while(ttreeNamesUnHadd.size() > pos){
+    bool isGood = true;
+    for(unsigned int i = pos+1; i < ttreeNamesUnHadd.size(); ++i){
+      if(ttreeNamesUnHadd.at(pos).size() == ttreeNamesUnHadd.at(i).size() && ttreeNamesUnHadd.at(i).find(ttreeNamesUnHadd.at(pos)) != std::string::npos){
+	ttreeNamesUnHadd.erase(ttreeNamesUnHadd.begin()+i);
+	isGood = false;
+	break;
+      }
+    }
+      
+    if(isGood) ++pos;
+  }
+
+  pos = 0;
+  while(ttreeNamesHadd.size() > pos){
+    bool isGood = true;
+    for(unsigned int i = pos+1; i < ttreeNamesHadd.size(); ++i){
+      if(ttreeNamesHadd.at(pos).size() == ttreeNamesHadd.at(i).size() && ttreeNamesHadd.at(i).find(ttreeNamesHadd.at(pos)) != std::string::npos){
+	ttreeNamesHadd.erase(ttreeNamesHadd.begin()+i);
+	isGood = false;
+	break;
+      }
+    }
+      
+    if(isGood) ++pos;
+  }
+
+
 
   std::vector< std::vector<std::string> > ttreeListOfBranches;
 
   if(ttreeNamesUnHadd.size() != ttreeNamesHadd.size()){
-    std::cout << "Mismatch in ttree number between file sets from \'" << unHaddFileDir << "\' and \'" << haddFileDir << "\'.return 1" << std::endl;
+    std::cout << "Mismatch in ttree number between file sets from \'" << unHaddFileDir << "\' and \'" << haddFileDir << "\'.return 1" << ", specifically \'" << unHaddFiles.at(0) << " (" << ttreeNamesUnHadd.size() << "), " << haddFiles.at(0) << " (" << ttreeNamesHadd.size() << ")" << std::endl;
     return 1;
   }
 
